@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="row mb-4">
+  <div class="col-md-4">
+    <h4>Designers</h4>
+    <ul class="list-group">
+      {% for designer, count in designer_counts %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('produtos_designer', designer_id=designer.id) }}">
+          {{ designer.nome }}
+        </a>
+        <span class="badge badge-primary badge-pill">{{ count }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="col-md-4">
+    <h4>Equipes</h4>
+    <ul class="list-group">
+      {% for equipe, count in equipe_counts %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('produtos_equipe', equipe_id=equipe.id) }}">
+          {{ equipe.nome }}
+        </a>
+        <span class="badge badge-primary badge-pill">{{ count }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="col-md-4">
+    <h4>Coleções</h4>
+    <ul class="list-group">
+      {% for colecao, count in colecao_counts %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('produtos_colecao', colecao_id=colecao.id) }}">
+          {{ colecao.nome }}
+        </a>
+        <span class="badge badge-primary badge-pill">{{ count }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

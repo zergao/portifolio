@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Portfólio de Móveis</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+								
+  <!-- CSS Personalizado -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+
+  <!-- Favicon -->
+  <link rel="icon" href="{{ url_for('static', filename='imgs/favicon.ico') }}" type="image/x-icon">
+
+  <!-- Melhorias de Segurança -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://stackpath.bootstrapcdn.com; script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com;">
+  <meta name="referrer" content="no-referrer">
+</head>
+<body>
+  <!-- Barra de Navegação -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('produtos') }}">
+      <img src="{{ url_for('static', filename='imgs/logo.png') }}" alt="Logo" style="height:40px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('produtos') }}">Produtos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('tecidos') }}">Tecidos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('acabamentos') }}">Acabamentos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('configuracoes_page') }}">Configurações</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        {% if session.get('admin_authenticated') %}
+          <li class="nav-item">
+            <span class="navbar-text mr-3">Bem-vindo, Sumaia!</span>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-danger btn-sm" href="{{ url_for('logout') }}">Sair</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="btn btn-primary btn-sm" href="{{ url_for('login') }}">Entrar</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <div class="container mt-4">
+    
+    <!-- Exibição de Mensagens Flash -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        <div class="alert-container">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Bloco de Conteúdo Específico das Páginas -->
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Bibliotecas JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Script para Manter a Aba Ativa -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      var hash = window.location.hash;
+      if(hash) {
+        var tabLink = document.querySelector('#configTabs a[href="' + hash + '"]');
+        if(tabLink) {
+          new bootstrap.Tab(tabLink).show();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

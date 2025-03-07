@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ produto.nome }}</h1>
+
+<!-- Estilo para ocultar elementos com a classe "no-print" durante a impressão -->
+<style>
+  @media print {
+    .no-print {
+      display: none;
+    }
+  }
+</style>
+
+<div class="row">
+  <div class="col-md-12">
+    {% if produto.foto_tumblr %}
+      <div class="d-flex justify-content-center">
+        <img src="{{ url_for('static', filename='uploads/' ~ produto.foto_tumblr) }}" 
+             class="img-fluid" 
+             alt="{{ produto.nome }}" 
+             style="max-height: 500px; object-fit: contain;">
+      </div>
+    {% endif %}
+    {# Se houver foto 360, pode ser exibida aqui #}
+  </div>
+</div>
+<div class="row mt-4">
+  <div class="col-md-6">
+    <p><strong>Descrição:</strong> {{ produto.descricao }}</p>
+    <p><strong>Detalhamento Técnico:</strong> {{ produto.detalhamento_tecnico }}</p>
+    <p><strong>Royalties:</strong> {{ produto.royalties }}</p>
+    <p><strong>Restrição de Tecido:</strong> {{ produto.restricao_tecido }}</p>
+    <p><strong>Marca:</strong> {% if produto.marca_artsofas %}ArtSofás{% else %}Pollus{% endif %}</p>
+    <p><strong>Matéria Prima Terceirizada:</strong> {% if produto.materia_prima_terceirizada %}Sim{% else %}Não{% endif %}</p>
+    {% if produto.desenho_tecnico %}
+      <h6 class="mt-3"><strong>Links para o Desenho Técnico:</strong></h6>
+      <ul>
+        {% for link in produto.desenho_tecnico.split(',') %}
+          <li><a href="{{ link.strip() }}" target="_blank">{{ link.strip() }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    <p><strong>Designer:</strong> {{ produto.designer.nome }}</p>
+    <p><strong>Equipe:</strong> {{ produto.equipe.nome }}</p>
+    <p><strong>Tipo:</strong> {{ produto.tipo.nome }}</p>
+    <p><strong>Status:</strong> {{ produto.status.nome }}</p>
+    <p><strong>Coleção:</strong> {% if produto.colecao %}{{ produto.colecao.nome }}{% else %}N/A{% endif %}</p>
+  </div>
+</div>
+
+<!-- Exibe os insumos terceirizados, se houver -->
+{% if produto.insumos %}
+<div class="mt-4">
+  <h5>Insumos Terceirizados</h5>
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Descrição</th>
+        <th>Fornecedores</th>
+        <th>Quantidades</th>
+        <th>Valor</th>
+        <th class="no-print">Anexo</th>
+        <th class="no-print">Ação</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for insumo in produto.insumos %}
+      <tr>
+        <td>{{ insumo.cod }}</td>
+        <td>{{ insumo.descricao }}</td>
+        <td>{{ insumo.fornecedores }}</td>
+        <td>{{ insumo.quantidades }}</td>
+        <td>{{ insumo.valor }}</td>
+        <td class="no-print">
+          {% if insumo.arquivo_anexo %}
+            <a href="{{ url_for('static', filename='uploads/' ~ insumo.arquivo_anexo) }}" target="_blank">Baixar</a>
+          {% else %}
+            N/A
+          {% endif %}
+        </td>
+        <td class="no-print">
+          <a href="{{ url_for('excluir_insumo', produto_id=produto.id, insumo_id=insumo.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este insumo?');">Excluir</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<!-- Botão para acionar a impressão -->
+<div class="mt-3">
+  <button class="btn btn-info no-print" onclick="window.print()">Imprimir Dados</button>
+</div>
+
+<!-- Botão Voltar para Produtos também com a classe "no-print" -->
+<a href="{{ url_for('produtos') }}" class="btn btn-secondary mt-3 no-print">Voltar para Produtos</a>
+{% endblock %}

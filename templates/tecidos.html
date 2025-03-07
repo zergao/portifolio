@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Tecidos</h1>
+
+<!-- Barra de Pesquisa para Tecidos -->
+<form class="form-inline mb-4" action="{{ url_for('pesquisar_tecidos') }}" method="get">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  
+  <input class="form-control mr-sm-2" type="search" placeholder="Pesquisar" name="termo" value="{{ termo if termo }}">
+  
+  <select class="form-control mr-sm-2" name="filtro">
+    <option value="cod" {% if filtro=='cod' %}selected{% endif %}>Código</option>
+    <option value="caracteristica" {% if filtro=='caracteristica' %}selected{% endif %}>Característica</option>
+    <option value="cor" {% if filtro=='cor' %}selected{% endif %}>Cor</option>
+    <option value="fornecedor" {% if filtro=='fornecedor' %}selected{% endif %}>Fornecedor</option>
+  </select>
+  
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
+</form>
+
+<div class="row">
+  {% for tecido in tecidos %}
+  <div class="col-md-4">
+      <div class="card mb-4">
+          <div class="card-body">
+              <h5 class="card-title">{{ tecido.cod }}</h5>
+              <p class="card-text">{{ tecido.descricao[:100] }}{% if tecido.descricao|length > 100 %}...{% endif %}</p>
+              <p class="card-text"><small class="text-muted">Cor: {{ tecido.cor }}</small></p>
+              <p class="card-text"><small class="text-muted">Fornecedor: {{ tecido.fornecedor }}</small></p>
+              <a href="{{ url_for('editar_tecido', tecido_id=tecido.id) }}" class="btn btn-warning btn-sm">Editar</a>
+              <a href="{{ url_for('excluir_tecido', tecido_id=tecido.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir o tecido {{ tecido.cod }}?');">Excluir</a>
+          </div>
+      </div>
+  </div>
+  {% else %}
+  <div class="col-12">
+      <p>Nenhum tecido cadastrado.</p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

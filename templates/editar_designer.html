@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Editar Designer</h1>
+<form method="POST">
+  <!-- Token CSRF para proteção -->
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  
+  <div class="form-group">
+    <label for="nome">Nome</label>
+    <input type="text" class="form-control" id="nome" name="nome" value="{{ designer.nome }}" required>
+  </div>
+  
+  <button type="submit" class="btn btn-primary">Salvar</button>
+</form>
+{% endblock %}

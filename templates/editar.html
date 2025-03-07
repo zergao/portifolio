@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Editar Produto</h1>
+<form method="POST" enctype="multipart/form-data">
+
+  <!-- Adiciona o token CSRF para proteção -->
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <!-- Coleção -->
+  
+							   
+  <div class="form-group">
+    <label for="colecao">Coleção</label>
+    <select class="form-control" id="colecao" name="colecao">
+      <option value="">Selecione a Coleção (opcional)</option>
+      {% for c in colecoes %}
+        <option value="{{ c.id }}" {% if produto.colecao_id == c.id %}selected{% endif %}>{{ c.nome }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  
+  <!-- Designer -->
+<div class="form-group">
+  <label for="designer">Designer</label>
+  <select class="form-control" id="designer" name="designer" required>
+    <option value="">Selecione o Designer</option>
+    {% for d in designers|sort(attribute='nome') %}
+      <option value="{{ d.id }}" {% if produto.designer_id == d.id %}selected{% endif %}>{{ d.nome }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+  <!-- Novo: Seleção da Marca -->
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="marca_artsofas" name="marca_artsofas" {% if produto.marca_artsofas %}checked{% endif %}>
+    <label class="form-check-label" for="marca_artsofas">ArtSofás</label>
+    <small class="form-text text-muted">Se não marcado, será considerado Pollus.</small>
+  </div>
+  
+  <!-- Tipo -->
+<div class="form-group">
+  <label for="tipo">Tipo do Produto</label>
+  <select class="form-control" id="tipo" name="tipo" required>
+    <option value="">Selecione o Tipo</option>
+    {% for t in tipos|sort(attribute='nome') %}
+      <option value="{{ t.id }}" {% if produto.tipo_id == t.id %}selected{% endif %}>{{ t.nome }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+  <!-- Nome -->
+  <div class="form-group">
+    <label for="nome">Nome do Produto</label>
+    <input type="text" class="form-control" id="nome" name="nome" value="{{ produto.nome }}" required>
+  </div>
+
+  <!-- Descrição -->
+  <div class="form-group">
+    <label for="descricao">Descrição</label>
+    <textarea class="form-control" id="descricao" name="descricao" required>{{ produto.descricao }}</textarea>
+  </div>
+
+  <!-- Detalhamento Técnico -->
+  <div class="form-group">
+    <label for="detalhamento_tecnico">Detalhamento Técnico</label>
+    <textarea class="form-control" id="detalhamento_tecnico" name="detalhamento_tecnico">{{ produto.detalhamento_tecnico }}</textarea>
+  </div>
+
+  <!-- Royalties -->
+  <div class="form-group">
+    <label for="royalties">Royalties</label>
+    <input type="text" class="form-control" id="royalties" name="royalties" value="{{ produto.royalties }}">
+  </div>
+  
+  <!-- Restrição de Tecido -->
+  <div class="form-group">
+    <label for="restricao_tecido">Restrição de Tecido</label>
+    <input type="text" class="form-control" id="restricao_tecido" name="restricao_tecido" value="{{ produto.restricao_tecido }}">
+  </div>
+  
+  <!-- Status -->
+<div class="form-group">
+  <label for="status">Status do Produto</label>
+  <select class="form-control" id="status" name="status" required>
+    <option value="">Selecione o Status</option>
+    {% for s in statuses|sort(attribute='nome') %}
+      <option value="{{ s.id }}" {% if produto.status_id == s.id %}selected{% endif %}>{{ s.nome }}</option>
+    {% endfor %}
+  </select>
+</div>
+  
+  <!-- Equipe -->
+<div class="form-group">
+  <label for="equipe">Equipe</label>
+  <select class="form-control" id="equipe" name="equipe" required>
+    <option value="">Selecione a Equipe</option>
+    {% for e in equipes|sort(attribute='nome') %}
+      <option value="{{ e.id }}" {% if produto.equipe_id == e.id %}selected{% endif %}>{{ e.nome }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+  <!-- Campo de texto para links do Desenho Técnico -->
+  <div class="form-group">
+    <label for="desenho_tecnico_links">Links para o Desenho Técnico (separados por vírgula ou quebra de linha)</label>
+    <textarea class="form-control" id="desenho_tecnico_links" name="desenho_tecnico_links">{{ produto.desenho_tecnico }}</textarea>
+  </div>
+  <!-- Foto do Produto (Tumblr) -->
+  <div class="form-group">
+    <label for="foto_tumblr">Foto do Produto (Tumblr)</label>
+    <input type="file" class="form-control-file" id="foto_tumblr" name="foto_tumblr">
+    {% if produto.foto_tumblr %}
+    <div class="mt-2">
+      <small>Foto atual:</small><br>
+      <img src="{{ url_for('static', filename='uploads/' ~ produto.foto_tumblr) }}" class="img-fluid uniform-img" alt="{{ produto.nome }}">
+    </div>
+    {% endif %}
+  </div>
+  
+  <!-- Checkbox Matéria Prima Terceirizada -->
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="materia_prima_terceirizada" name="materia_prima_terceirizada" {% if produto.materia_prima_terceirizada %}checked{% endif %}>
+    <label class="form-check-label" for="materia_prima_terceirizada">Matéria Prima Terceirizada</label>
+  </div>
+
+  <!-- Seção de Insumos Terceirizados -->
+<div id="insumos_section" style="display: {% if produto.materia_prima_terceirizada %}block{% else %}none{% endif %};">
+  <h5>Insumos Terceirizados</h5>
+  <div id="insumos_container">
+      {% for insumo in produto.insumos %}
+      <div class="insumo_item mb-3 border p-2">
+          <input type="text" class="form-control mb-1" name="insumo_cod[]" placeholder="Código" value="{{ insumo.cod }}">
+          <input type="text" class="form-control mb-1" name="insumo_descricao[]" placeholder="Descrição" value="{{ insumo.descricao }}">
+          <input type="text" class="form-control mb-1" name="insumo_fornecedores[]" placeholder="Fornecedores" value="{{ insumo.fornecedores }}">
+          <input type="text" class="form-control mb-1" name="insumo_quantidades[]" placeholder="Quantidades" value="{{ insumo.quantidades }}">
+          <input type="text" class="form-control mb-1" name="insumo_valor[]" placeholder="Valor" value="{{ insumo.valor }}">
+
+          <!-- Exibir o anexo existente e permitir o upload de um novo -->
+          <div class="form-group">
+              <label>Anexo do Insumo:</label>
+              {% if insumo.arquivo_anexo %}
+              <div class="mb-2">
+                  <small>Arquivo atual:
+                      <a href="{{ url_for('static', filename='uploads/' ~ insumo.arquivo_anexo) }}" target="_blank">
+                          {{ insumo.arquivo_anexo }}
+                      </a>
+                  </small>
+                  <input type="checkbox" name="remover_anexo[]" value="{{ insumo.id }}"> Remover Anexo
+              </div>
+              {% endif %}
+              <input type="file" class="form-control-file mb-1" name="insumo_arquivo[]">
+          </div>
+
+          <!-- Checkbox para remover o insumo -->
+          <input type="checkbox" name="remover_insumo[]" value="{{ insumo.id }}"> Remover Insumo
+      </div>
+      {% endfor %}
+  </div>
+
+  <!-- Adicionar novo insumo vazio -->
+  <div class="insumo_item mb-3 border p-2">
+      <input type="text" class="form-control mb-1" name="insumo_cod[]" placeholder="Código">
+      <input type="text" class="form-control mb-1" name="insumo_descricao[]" placeholder="Descrição">
+      <input type="text" class="form-control mb-1" name="insumo_fornecedores[]" placeholder="Fornecedores">
+      <input type="text" class="form-control mb-1" name="insumo_quantidades[]" placeholder="Quantidades">
+      <input type="text" class="form-control mb-1" name="insumo_valor[]" placeholder="Valor">
+      <input type="file" class="form-control-file mb-1" name="insumo_arquivo[]">
+      <button type="button" class="btn btn-danger btn-sm remove_insumo">Excluir Insumo</button>
+  </div>
+
+  <button type="button" class="btn btn-secondary btn-sm" id="add_insumo">Adicionar Mais Insumo</button>
+</div>
+
+
+
+  <button type="submit" class="btn btn-primary mt-3">Salvar Alterações</button>
+</form>
+
+												
+<script>
+// Mostrar/ocultar a seção de insumos
+document.getElementById('materia_prima_terceirizada').addEventListener('change', function() {
+  document.getElementById('insumos_section').style.display = this.checked ? 'block' : 'none';
+});
+
+// Adicionar novo insumo
+document.getElementById('add_insumo').addEventListener('click', function() {
+  var container = document.getElementById('insumos_container');
+  var newInsumo = container.firstElementChild.cloneNode(true);
+  var inputs = newInsumo.getElementsByTagName('input');
+  for (var i = 0; i < inputs.length; i++) {
+    inputs[i].value = "";
+  }
+  container.appendChild(newInsumo);
+});
+
+// Permitir remover insumo
+document.addEventListener('click', function(e) {
+  if (e.target && e.target.classList.contains('remove_insumo')) {
+    var insumoItem = e.target.closest('.insumo_item');
+    insumoItem.remove();
+  }
+});
+</script>
+{% endblock %}

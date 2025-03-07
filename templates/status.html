@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Gerenciar Status</h1>
+<form method="POST">
+    <!-- Token CSRF para proteção contra ataques -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="form-group">
+       <label for="nome">Novo Status</label>
+       <input type="text" class="form-control" id="nome" name="nome" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Adicionar Status</button>
+</form>
+<hr>
+<h2>Status existentes</h2>
+<ul>
+{% for s in statuses %}
+  <li>{{ s.nome }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

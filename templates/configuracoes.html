@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1>Configurações</h1>
+  {% if session.get('admin_authenticated') %}
+    <div>
+      <span class="badge badge-success">Usuário: Administrador</span>
+      <a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm ml-2">Sair</a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Abas do Bootstrap -->
+<ul class="nav nav-tabs" id="configTabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="produtos_config-tab" data-toggle="tab" href="#produtos_config" role="tab" aria-controls="produtos_config" aria-selected="true">Produtos</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="tecidos_config-tab" data-toggle="tab" href="#tecidos_config" role="tab" aria-controls="tecidos_config" aria-selected="false">Tecidos</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="acabamentos_config-tab" data-toggle="tab" href="#acabamentos_config" role="tab" aria-controls="acabamentos_config" aria-selected="false">Acabamentos</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="tipos-tab" data-toggle="tab" href="#tipos" role="tab" aria-controls="tipos" aria-selected="false">Tipos</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="status-tab" data-toggle="tab" href="#status" role="tab" aria-controls="status" aria-selected="false">Status</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="designers-tab" data-toggle="tab" href="#designers" role="tab" aria-controls="designers" aria-selected="false">Designers</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="equipes-tab" data-toggle="tab" href="#equipes" role="tab" aria-controls="equipes" aria-selected="false">Equipes</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="colecoes-tab" data-toggle="tab" href="#colecoes" role="tab" aria-controls="colecoes" aria-selected="false">Coleções</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="backup-tab" data-toggle="tab" href="#backup" role="tab" aria-controls="backup" aria-selected="false">Backup/Restore</a>
+  </li>
+</ul>
+
+<div class="tab-content mt-3" id="configTabsContent">
+  <!-- Aba Produtos -->
+  <div class="tab-pane fade show active" id="produtos_config" role="tabpanel" aria-labelledby="produtos_config-tab">
+    <h2>Produtos</h2>
+    <a href="{{ url_for('cadastrar_produto') }}" class="btn btn-success mb-3">Adicionar Produto</a>
+    <ul class="list-group">
+      {% for p in produtos|sort(attribute='nome') %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ p.nome }}
+        <span>
+          <a href="{{ url_for('editar', produto_id=p.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{{ url_for('produto', produto_id=p.id) }}" class="btn btn-info btn-sm">Ver Detalhes</a>
+          <a href="{{ url_for('excluir_produto', produto_id=p.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir o produto {{ p.nome }}?');">Excluir</a>
+        </span>
+      </li>
+      {% else %}
+      <li class="list-group-item">Nenhum produto cadastrado.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Aba Tecidos -->
+  <div class="tab-pane fade" id="tecidos_config" role="tabpanel" aria-labelledby="tecidos_config-tab">
+    <h2>Tecidos</h2>
+    <a href="{{ url_for('cadastrar_tecido') }}" class="btn btn-success mb-3">Adicionar Tecido</a>
+    <ul class="list-group">
+      {% for tecido in tecidos|sort(attribute='descricao') %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <strong>{{ tecido.cod }}</strong> - {{ tecido.descricao }}
+        <span>
+          <a href="{{ url_for('editar_tecido', tecido_id=tecido.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{{ url_for('excluir_tecido', tecido_id=tecido.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir o tecido {{ tecido.cod }}?');">Excluir</a>
+        </span>
+      </li>
+      {% else %}
+      <li class="list-group-item">Nenhum tecido cadastrado.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Aba Acabamentos -->
+  <div class="tab-pane fade" id="acabamentos_config" role="tabpanel" aria-labelledby="acabamentos_config-tab">
+    <h2>Acabamentos</h2>
+    <a href="{{ url_for('cadastrar_acabamento') }}" class="btn btn-success mb-3">Adicionar Acabamento</a>
+    <ul class="list-group">
+      {% for acabamento in acabamentos|sort(attribute='descricao') %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <strong>{{ acabamento.cod }}</strong> - {{ acabamento.descricao }}
+        <span>
+          <a href="{{ url_for('editar_acabamento', acabamento_id=acabamento.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{{ url_for('excluir_acabamento', acabamento_id=acabamento.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir o acabamento {{ acabamento.cod }}?');">Excluir</a>
+        </span>
+      </li>
+      {% else %}
+      <li class="list-group-item">Nenhum acabamento cadastrado.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Aba Tipos -->
+  <div class="tab-pane fade" id="tipos" role="tabpanel" aria-labelledby="tipos-tab">
+    <h2>Tipos</h2>
+    <form method="POST" action="{{ url_for('configuracoes_page') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="novo_tipo">Novo Tipo</label>
+        <input type="text" class="form-control" id="novo_tipo" name="novo_tipo" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Adicionar Tipo</button>
+    </form>
+    <hr>
+    <ul class="list-group">
+      {% for tipo in tipos|sort(attribute='nome') %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ tipo.nome }}
+        <span>
+          <a href="{{ url_for('editar_tipo', tipo_id=tipo.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{{ url_for('excluir_tipo', tipo_id=tipo.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir o tipo {{ tipo.nome }}?');">Excluir</a>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Aba Status -->
+  <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="status-tab">
+    <h2>Status</h2>
+    <form method="POST" action="{{ url_for('configuracoes_page') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="novo_status">Novo Status</label>
+        <input type="text" class="form-control" id="novo_status" name="novo_status" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Adicionar Status</button>
+    </form>
+    <hr>
+    <ul class="list-group">
+      {% for s in statuses|sort(attribute='nome') %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ s.nome }}
+        <span>
+          <a href="{{ url_for('editar_status', status_id=s.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{{ url_for('excluir_status', status_id=s.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir o status {{ s.nome }}?');">Excluir</a>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Aba Designers -->
+  <div class="tab-pane fade" id="designers" role="tabpanel" aria-labelledby="designers-tab">
+    <h2>Designers</h2>
+    <form method="POST" action="{{ url_for('configuracoes_page') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="novo_designer">Novo Designer</label>
+        <input type="text" class="form-control" id="novo_designer" name="novo_designer" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Adicionar Designer</button>
+    </form>
+    <hr>
+    <ul class="list-group">
+      {% for d in designers|sort(attribute='nome') %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ d.nome }}
+        <span>
+          <a href="{{ url_for('editar_designer', designer_id=d.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{{ url_for('excluir_designer', designer_id=d.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir o designer {{ d.nome }}?');">Excluir</a>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Aba Equipes -->
+  <div class="tab-pane fade" id="equipes" role="tabpanel" aria-labelledby="equipes-tab">
+    <h2>Equipes</h2>
+    <form method="POST" action="{{ url_for('configuracoes_page') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="novo_equipe">Nova Equipe</label>
+        <input type="text" class="form-control" id="novo_equipe" name="novo_equipe" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Adicionar Equipe</button>
+    </form>
+    <hr>
+    <ul class="list-group">
+      {% for e in equipes|sort(attribute='nome') %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ e.nome }}
+        <span>
+          <a href="{{ url_for('editar_equipe', equipe_id=e.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{{ url_for('excluir_equipe', equipe_id=e.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir a equipe {{ e.nome }}?');">Excluir</a>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Aba Coleções -->
+  <div class="tab-pane fade" id="colecoes" role="tabpanel" aria-labelledby="colecoes-tab">
+    <h2>Coleções</h2>
+    <form method="POST" action="{{ url_for('configuracoes_page') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="novo_colecao">Novo Nome da Coleção</label>
+        <input type="text" class="form-control" id="novo_colecao" name="novo_colecao" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Adicionar Coleção</button>
+    </form>
+    <hr>
+    <ul class="list-group">
+      {% for c in colecoes|sort(attribute='nome') %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ c.nome }}
+        <span>
+          <a href="{{ url_for('editar_colecao', colecao_id=c.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{{ url_for('excluir_colecao', colecao_id=c.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir a coleção {{ c.nome }}?');">Excluir</a>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Aba Backup/Restore -->
+  <div class="tab-pane fade" id="backup" role="tabpanel" aria-labelledby="backup-tab">
+    <h2>Backup e Restauração</h2>
+    <a href="{{ url_for('backup') }}" class="btn btn-info mb-3">Fazer Backup da Base</a>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="backup_file">Restaurar Backup (JSON):</label>
+        <input type="file" class="form-control-file" id="backup_file" name="backup_file" required>
+      </div>
+      <button type="submit" class="btn btn-secondary">Restaurar Backup</button>
+    </form>
+  </div>
+</div>
+
+<!-- Script para manter a aba ativa -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  $(document).ready(function(){
+    var hash = window.location.hash;
+    if(hash) {
+      $('#configTabs a[href="' + hash + '"]').tab('show');
+    }
+  });
+</script>
+{% endblock %}

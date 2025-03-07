@@ -1,0 +1,8 @@
+<form method="POST" enctype="multipart/form-data">
+  {{ csrf_token() }}
+  <div class="form-group">
+     <label for="backup_file">Selecione o arquivo de backup (JSON):</label>
+     <input type="file" class="form-control-file" id="backup_file" name="backup_file" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Restaurar Backup</button>
+</form>

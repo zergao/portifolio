@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Editar Tecido</h1>
+<form method="POST">
+  <!-- Token CSRF para proteção -->
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  
+  <div class="form-group">
+    <label for="cod">Código</label>
+    <input type="text" class="form-control" id="cod" name="cod" value="{{ tecido.cod }}" required>
+  </div>
+  <div class="form-group">
+    <label for="caracteristica">Característica</label>
+    <input type="text" class="form-control" id="caracteristica" name="caracteristica" value="{{ tecido.caracteristica }}">
+  </div>
+  <div class="form-group">
+    <label for="descricao">Descrição</label>
+    <textarea class="form-control" id="descricao" name="descricao">{{ tecido.descricao }}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="cor">Cor</label>
+    <input type="text" class="form-control" id="cor" name="cor" value="{{ tecido.cor }}">
+  </div>
+  <div class="form-group">
+    <label for="composicao">Composição</label>
+    <input type="text" class="form-control" id="composicao" name="composicao" value="{{ tecido.composicao }}">
+  </div>
+  <div class="form-group">
+    <label for="fornecedor">Fornecedor</label>
+    <input type="text" class="form-control" id="fornecedor" name="fornecedor" value="{{ tecido.fornecedor }}">
+  </div>
+  <div class="form-group">
+    <label for="custo">Custo</label>
+    <input type="number" step="0.01" class="form-control" id="custo" name="custo" value="{{ tecido.custo }}">
+  </div>
+  
+  <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+</form>
+{% endblock %}

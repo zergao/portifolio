@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Gerenciar Coleções</h1>
+<form method="POST">
+  {{ csrf_token() }}
+  <div class="form-group">
+    <label for="nome">Nome da Coleção</label>
+    <input type="text" class="form-control" id="nome" name="nome" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Adicionar Coleção</button>
+</form>
+<hr>
+<h2>Coleções Existentes</h2>
+<ul class="list-group">
+  {% for c in colecoes %}
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    {{ c.nome }}
+    <span>
+      <a href="{{ url_for('editar_colecao', colecao_id=c.id) }}" class="btn btn-warning btn-sm">Editar</a>
+      <a href="{{ url_for('excluir_colecao', colecao_id=c.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta coleção?');">Excluir</a>
+    </span>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Gerenciar Tipos</h1>
+<form method="POST" action="{{ url_for('configuracoes_page') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <div class="form-group">
+       <label for="nome">Novo Tipo</label>
+       <input type="text" class="form-control" id="nome" name="novo_tipo" required>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Adicionar Tipo</button>
+</form>
+
+<hr>
+
+<h2>Tipos existentes</h2>
+<ul>
+    {% for tipo in tipos %}
+        <li>{{ tipo.nome }}</li>
+    {% else %}
+        <li>Nenhum tipo cadastrado.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

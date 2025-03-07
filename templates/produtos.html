@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Produtos</h1>
+
+<!-- Barra de Pesquisa -->
+<form class="form-inline mb-4" action="{{ url_for('pesquisar') }}" method="get">
+  <input class="form-control mr-sm-2" type="search" placeholder="Pesquisar" name="termo" value="{{ termo if termo }}">
+  <select class="form-control mr-sm-2" name="filtro">
+    <option value="nome" {% if filtro=='nome' %}selected{% endif %}>Produto</option>
+    <option value="designer" {% if filtro=='designer' %}selected{% endif %}>Designer</option>
+    <option value="equipe" {% if filtro=='equipe' %}selected{% endif %}>Equipe</option>
+    <option value="tipo" {% if filtro=='tipo' %}selected{% endif %}>Tipo</option>
+    <option value="status" {% if filtro=='status' %}selected{% endif %}>Status</option>
+    <option value="colecao" {% if filtro=='colecao' %}selected{% endif %}>Coleção</option>
+  </select>
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
+</form>
+
+<div class="row">
+  {% for produto in produtos %}
+  <div class="col-md-4">
+      <div class="card mb-4">
+          {% if produto.foto_tumblr %}
+          <img src="{{ url_for('static', filename='uploads/' ~ produto.foto_tumblr) }}" class="card-img-top img-fluid uniform-img" alt="{{ produto.nome }}">
+          {% endif %}
+          <div class="card-body">
+              <h5 class="card-title">{{ produto.nome }}</h5>
+              <p class="card-text">{{ produto.descricao[:100] }}{% if produto.descricao|length > 100 %}...{% endif %}</p>
+              <p class="card-text"><small class="text-muted">Coleção: {{ produto.colecao.nome }}</small></p>
+              <p class="card-text"><small class="text-muted">Empresa: {% if produto.marca_artsofas %}ArtSofás{% else %}Pollus{% endif %}</small></p>
+			  <p class="card-text"><small class="text-muted">Matéria Prima Terceirizada: {% if produto.materia_prima_terceirizada %}Sim{% else %}Não{% endif %}</small></p>
+			  
+              <a href="{{ url_for('produto', produto_id=produto.id) }}" class="btn btn-info btn-sm">Ver Detalhes</a>
+          </div>
+      </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
