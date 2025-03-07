@@ -1,0 +1,43 @@
+/* custom.css */
+
+body {
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand img {
+  height: 40px;
+}
+
+.card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.btn {
+  border-radius: 20px;
+}
+
+/* Classe para padronizar as imagens dos produtos */
+.uniform-img {
+  width: 100%;
+  height: 100px; /* ajuste a altura conforme sua necessidade */
+  object-fit: cover;
+}
+
+@media (max-width: 576px) {
+  .card-title {
+    font-size: 1rem;
+  }
+}
