@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Acabamentos</h1>
+
+<!-- Barra de Pesquisa para Acabamentos -->
+<form class="form-inline mb-4" action="{{ url_for('pesquisar_acabamentos') }}" method="get">
+  <input class="form-control mr-sm-2" type="search" placeholder="Pesquisar" name="termo" value="{{ termo if termo }}">
+  <select class="form-control mr-sm-2" name="filtro">
+    <option value="cod" {% if filtro=='cod' %}selected{% endif %}>Código</option>
+    <option value="caracteristica" {% if filtro=='caracteristica' %}selected{% endif %}>Característica</option>
+    <option value="cor" {% if filtro=='cor' %}selected{% endif %}>Cor</option>
+    <option value="fornecedor" {% if filtro=='fornecedor' %}selected{% endif %}>Fornecedor</option>
+  </select>
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
+</form>
+
+<div class="row">
+  {% for acabamento in acabamentos %}
+  <div class="col-md-4">
+      <div class="card mb-4">
+          <div class="card-body">
+              <h5 class="card-title">{{ acabamento.cod }}</h5>
+              <p class="card-text">{{ acabamento.descricao[:100] }}{% if acabamento.descricao|length > 100 %}...{% endif %}</p>
+              <p class="card-text"><small class="text-muted">Cor: {{ acabamento.cor }}</small></p>
+              <p class="card-text"><small class="text-muted">Fornecedor: {{ acabamento.fornecedor }}</small></p>
+              <a href="{{ url_for('editar_acabamento', acabamento_id=acabamento.id) }}" class="btn btn-warning btn-sm">Editar</a>
+              <a href="{{ url_for('excluir_acabamento', acabamento_id=acabamento.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir o acabamento {{ acabamento.cod }}?');">Excluir</a>
+          </div>
+      </div>
+  </div>
+  {% else %}
+  <div class="col-12">
+      <p>Nenhum acabamento cadastrado.</p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
